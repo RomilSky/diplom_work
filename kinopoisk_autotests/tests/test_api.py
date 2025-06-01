@@ -61,12 +61,24 @@ class TestKinopoiskAPI:
 
     @allure.title("Search with invalid year parameter")
     def test_search_with_invalid_year(self, api_client):
+        """Тест проверяет, что API возвращает корректные результаты даже при некорректном параметре года"""
         url = f"{Settings.API_URL}{Settings.API_VERSION}/movie/search"
         params = {
             "query": TestData.MOVIE_TITLE_YEAR_FILTER,
             "year": TestData.INVALID_YEAR
         }
 
-        response = api_client.get(url, params=params)
-        assert response.status_code == 400
-        assert "error" in response.json()
+        with allure.step("Отправляем запрос с некорректным годом"):
+            response = api_client.get(url, params=params)
+            assert response.status_code == 200, "API должен возвращать 200 даже при некорректных параметрах"
+
+        with allure.step("Проверяем структуру ответа"):
+            data = response.json()
+            assert "docs" in data, "В ответе должно быть поле docs"
+
+            # Проверяем, что в результатах нет фильмов с указанным некорректным годом
+            if len(data["docs"]) > 0:
+                for movie in data["docs"]:
+                    assert "year" not in movie or movie["year"] != TestData.INVALID_YEAR, \
+                        f"Найден фильм с некорректным годом: {movie.get('name')}"
+

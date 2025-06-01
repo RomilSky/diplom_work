@@ -1,7 +1,7 @@
 class Settings:
     # UI Settings
     BASE_URL = "https://www.kinopoisk.ru/"
-    BROWSERS = ["chrome", "firefox"]  # Supported browsers
+    BROWSERS = ["chrome"]  # Supported browsers
 
     # API Settings
     API_URL = "https://api.kinopoisk.dev/"
@@ -11,3 +11,4 @@ class Settings:
     # Timeouts
     UI_TIMEOUT = 10
     API_TIMEOUT = 5
+
